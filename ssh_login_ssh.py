@@ -20,7 +20,7 @@ class ssh_log_statistics:
 					else:
 						self.ip_count[ip]= 1 #否则就表示此IP是第一次出现
 						
-				else: #否则就是木有匹配到，不进行任何操作
+				else: #否则就是没有匹配到，不进行任何操作
 					pass
 			for k,v in self.ip_count.iteritems():
 				print (k,'ssh login frequency is',v)
