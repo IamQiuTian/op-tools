@@ -19,6 +19,6 @@ if __name__ == '__main__':
     log_file = '/var/log/httpd/access_log' #日志文件路径
     ip_patt = '^(\d+\.){3}\d+' #匹配IP ，x.x.x.x
     br_patt = 'Mozilla|Chrome' #匹配游览器类型
-	
+
     print(count_patt(log_file,ip_patt)) #打印字典
     print(count_patt(log_file,br_patt))
