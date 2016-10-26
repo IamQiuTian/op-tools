@@ -28,9 +28,9 @@ class ssh_log_statistics:
 			#    if l[0] > 30: #如果有IP的登录失败次数超过30次
 			#	print (l) #就打印出来
 			w = max(map(len,self.ip_count.keys()))
-            for k in self.ip_count:
-				if self.ip_count[k] >= 30:
-					print k.ljust(w),':',self.ip_count[k]	
+            		for k in self.ip_count:
+			    if self.ip_count[k] >= 30:
+		                print k.ljust(w),':',self.ip_count[k]	
 				
 				
 if __name__ == '__main__':
