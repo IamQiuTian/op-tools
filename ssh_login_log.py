@@ -12,7 +12,8 @@ class ssh_log_statistics:
 		with open(self.logfile_path,'r') as my_log: #读取日志文件
 			for line in my_log: 
 				new_line = line.strip() #取出行，不要空白
-				if re.search("Failed password",new_line): #如果成功匹配到就....
+				#if re.search("Accepted password",new_line): #匹配登录成功的的
+				if re.search("Failed password",new_line): #匹配登录失败的
 					every_segment = new_line.split() #以空白分割为列表
 					ip = every_segment[-4] #取出列表中IP的部分
 					if self.ip_count.has_key(ip): #如果计数字典中已经存在了此IP
@@ -30,6 +31,7 @@ class ssh_log_statistics:
 			w = max(map(len,self.ip_count.keys()))
             		for k in self.ip_count:
 			    if self.ip_count[k] >= 30:
+				print ("IP" "              " "次数")
 		                print k.ljust(w),':',self.ip_count[k]	
 				
 				
