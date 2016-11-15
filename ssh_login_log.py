@@ -10,7 +10,7 @@ class ssh_log_statistics:
 	
 	def logfile_read(self):
 		with open(self.logfile_path,'r') as my_log: #读取日志文件
-			for line in my_log: 
+			for line in my_log:
 				new_line = line.strip() #取出行，不要空白
 				#if re.search("Accepted password",new_line): #匹配登录成功的的
 				if re.search("Failed password",new_line): #匹配登录失败的
