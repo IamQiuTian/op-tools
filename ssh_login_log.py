@@ -31,7 +31,6 @@ class ssh_log_statistics:
 			w = max(map(len,self.ip_count.keys()))
             		for k in self.ip_count:
 			    if self.ip_count[k] >= 30:
-				print ("IP" "              " "次数")
 		                print k.ljust(w),':',self.ip_count[k]	
 				
 				
