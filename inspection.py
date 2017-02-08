@@ -92,4 +92,4 @@ if __name__ == "__main__":
     t = Inspection()
     t.main()
     
-    print "当前时间是 %s" %(time.strftime('%Y-%m-%d %H:%m:%S'))
+    print "当前时间是 %s" %(time.strftime('%Y-%m-%d %H:%m:%S')) 
