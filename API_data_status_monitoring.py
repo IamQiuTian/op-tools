@@ -30,13 +30,13 @@ class Json_code(object):
     def Dictionary_intersection(self):
         dict3 = {}
         self.old_json = t.Retrieve_data()["data"]["list"]
-        time.sleep(300)
+        #time.sleep(300)
         self.new_json = t.Retrieve_data()["data"]["list"]
+        #测试IP不一致情况
         #self.new_json["192.168.1.1"] = ["10","11"]
-        #self.new_json["192.168.2.1"] = ["13","15"]
+        self.old_json["192.168.2.1"] = ["13","15"]
+        #测试数据不一致情况
         #self.new_json["117.149.134.139"] = ["8","9"]
-        #self.old_json = {"127.0.0.1":["1","2","3"],"192.168.1.1":["2","3","4"]}
-        #self.new_json = {"127.0.0.1":["1","2","3"],"192.168.1.1":["2","3","4"],"168.54.24.1":["8"]}
 
         l3 = []
         for key,value in  self.new_json.items():
@@ -57,7 +57,13 @@ class Json_code(object):
                     l3 = []
             else:
                 dict3[key] = value
-                
+    
+        for key,value in self.old_json.items():
+            if key not in self.new_json:
+                dict3[key] = value
+            else:
+                pass
+
         return dict3
 
     def Send_mail(self,to_list,sub,content):
@@ -101,6 +107,12 @@ class Json_code(object):
                             with open("tmp.log","a") as f:
                                 f.write(self.text2)
                             t.Send_mail(self.mailto_list,"IP发生变化",self.text2)
+
+                        if k in self.old_json:
+                            self.text3 = "{time} 减少一个IP {ip}\n\n".format(time=time.strftime("%Y-%m-%d %A %X %Z",time.localtime()),ip=k) 
+                            with open("tmp.log","a") as f:
+                                f.write(self.text3)
+                            t.Send_mail(self.mailto_list,"IP发生变化",self.text3)
             break
                         
 if __name__ == "__main__":
