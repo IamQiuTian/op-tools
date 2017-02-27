@@ -113,7 +113,7 @@ class Json_code(object):
                             with open("tmp.log","a") as f:
                                 f.write(self.text3)
                             t.Send_mail(self.mailto_list,"IP发生变化",self.text3)
-            break
+
                         
 if __name__ == "__main__":
     url = "https://x.x.x.x"
