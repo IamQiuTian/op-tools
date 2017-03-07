@@ -116,7 +116,7 @@ class Json_code(object):
                                 f.write(self.text2)
                             t.Send_mail(self.mailto_list,"IP发生变化",self.text2)
 
-                        if k in self.old_json:
+                        if k in self.old_json and not self.new_json:
                             self.text3 = "{time} 减少一个IP {ip}\n\n".format(time=time.strftime("%Y-%m-%d %A %X %Z",time.localtime()),ip=k) 
                             with open("tmp.log","a") as f:
                                 f.write(self.text3)
