@@ -32,14 +32,14 @@ class Json_code(object):
         if _data:
             return _data
         else:
-            t.Send_mail(self.mailto_list,"接口异常","接口获取数据为空!")
+            self.send_mail(self.mailto_list,"接口异常","接口获取数据为空!")
             
 
     def Dictionary_intersection(self):
         dict3 = {}
-        self.old_json = t.Retrieve_data()["data"]["list"]
+        self.old_json = self.Retrieve_data()["data"]["list"]
         time.sleep(1800)
-        self.new_json = t.Retrieve_data()["data"]["list"]
+        self.new_json = self.Retrieve_data()["data"]["list"]
         #测试IP不一致情况
         #self.new_json["192.168.1.1"] = ["10","11"]
         #self.old_json["192.168.2.1"] = ["13","15"]
@@ -96,7 +96,7 @@ class Json_code(object):
     def Main(self):
         while True:
             try:
-                _res = t.Dictionary_intersection()
+                _res = self.Dictionary_intersection()
                 _tmp = []
                 if _res:
                     for k,v in _res.items():
@@ -105,7 +105,7 @@ class Json_code(object):
                             for i in _tmp:
                                 self.text = "{time} {ip} 的端口发生改变,现值是{new_code},原值是{old_code}\n\n".format(time=time.strftime("%Y-%m-%d %A %X %Z",time.localtime()),ip=i,new_code=self.new_json[i],old_code=self.old_json[i])
                                 f.write(self.text)
-                        t.Send_mail(self.mailto_list,"端口发生变化",self.text)
+                        self.Send_mail(self.mailto_list,"端口发生变化",self.text)
 
             except KeyError:
                 if _res:
@@ -114,13 +114,13 @@ class Json_code(object):
                             self.text2 = "{time} 新添加IP {ip}\n\n".format(time=time.strftime("%Y-%m-%d %A %X %Z",time.localtime()),ip=k)
                             with open("tmp.log","a") as f:
                                 f.write(self.text2)
-                            t.Send_mail(self.mailto_list,"IP发生变化",self.text2)
+                            self.Send_mail(self.mailto_list,"IP发生变化",self.text2)
 
                         if k in self.old_json and not self.new_json:
                             self.text3 = "{time} 减少一个IP {ip}\n\n".format(time=time.strftime("%Y-%m-%d %A %X %Z",time.localtime()),ip=k) 
                             with open("tmp.log","a") as f:
                                 f.write(self.text3)
-                            t.Send_mail(self.mailto_list,"IP发生变化",self.text3)
+                            self.Send_mail(self.mailto_list,"IP发生变化",self.text3)
                             
             
 if __name__ == "__main__":
