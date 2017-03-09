@@ -103,7 +103,9 @@ class Json_code(object):
                         _tmp.append(k)
                         with open("tmp.log","a") as f:
                             for i in _tmp:
-                                self.text = "{time} {ip} 的端口发生改变,现值是{new_code},原值是{old_code}\n\n".format(time=time.strftime("%Y-%m-%d %A %X %Z",time.localtime()),ip=i,new_code=self.new_json[i],old_code=self.old_json[i])
+                                self.text = ("{time} {ip} 的端口发生改变,现值是{new_code},原值是{old_code}\n\n"
+                                             .format(time=time.strftime("%Y-%m-%d %A %X %Z",time.localtime()),
+                                                     ip=i,new_code=self.new_json[i],old_code=self.old_json[i]))
                                 f.write(self.text)
                         self.Send_mail(self.mailto_list,"端口发生变化",self.text)
 
