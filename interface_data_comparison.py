@@ -27,7 +27,7 @@ class Json_code(threading.Thread):
     
     #从接口获取数据,并进行json处理
     def Retrieve_data(self):
-        _url = "https://kenan.3spear.com/outerapi/ports?tags={}".format(self._argv)
+        _url = "https://xxxx.xxxx.com/xxx/xxxx?tags={}".format(self._argv)
         _headers = { 'API-KEY':'xxxx','API-SECRET':'xxxx','API-ID':'xxxxx'}
         #_res = requests.get(self.url, headers=self.headers)
         _reques = urllib2.Request(url=_url,headers=_headers)
