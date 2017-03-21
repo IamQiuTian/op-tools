@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 import threading
 import os
 import sys
+import numpy as np
 
 
 class Json_code(threading.Thread):
@@ -67,9 +68,10 @@ class Json_code(threading.Thread):
         ip_json = self.Retrieve_data()["data"]["list"]
         #测试IP有增加的情况
         #ip_json["192.168.1.1"] = [1,2,3]
-	for key,value in  ip_json.items():
-            if key not in ip_list_def:
-                Ip_list.append(key)
+	#for key,value in  ip_json.items():
+        #    if key not in ip_list_def:
+        #        Ip_list.append(key)
+	Ip_list = [ip for ip in ip_json if np.in1d(ip,ip_list_def) == [False]]
         return Ip_list 
         
 
