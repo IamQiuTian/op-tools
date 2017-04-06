@@ -132,7 +132,7 @@ class Utils(Json_code):
             ip = ','.join(ip_data).encode('utf-8')
             self.Csv("ip-"+_time, ip, "ignore", "increase") 
             _text.append(ip)
-            #Json_code.Send_mail(self,self.mailto_list,"[ERR]"+self._argv+"[NEW IP]",_text)
+            #self.Send_mail(self,self.mailto_list,"[ERR]"+self._argv+"[NEW IP]",_text)
 
     #将端口相关写入日志
     def Port_count(self):
