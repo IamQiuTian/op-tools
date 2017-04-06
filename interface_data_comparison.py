@@ -111,7 +111,7 @@ class Json_code(threading.Thread):
             return False 
     
     def Csv(self, file_path, ip, port, status ):
-        write_file = open(file_path+".csv",'w')
+        write_file = open(file_path+".csv",'a')
         write_csv = csv.writer(write_file)
         write_csv.writerow(["Ip", "Port", "Status"])
         write_csv.writerow([ip, port, status])
