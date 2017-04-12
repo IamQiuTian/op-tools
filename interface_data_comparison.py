@@ -88,8 +88,10 @@ class Json_code(threading.Thread):
                 else:
                     #否则就扔到一个临时的列表里
                     _tmp.append(p)
-            #然后IP和对应端口进行组装
-            dict_port[key] = _tmp
+            if _tmp:
+            	#然后IP和对应端口进行组装
+            	dict_port[key] = _tmp
+
         return dict_port
 
     #用来发送邮件            
@@ -144,29 +146,26 @@ class Utils(Json_code):
     def Ip_count(self):
         ip_data = Json_code.Ip_alignment(self)
         _time = time.strftime('%Y-%m-%d')
-        _text = []
         self.Csv("csv/"+self._argv+"-ip-"+_time,"w", "Ip", "Port", "Status")
+
         if ip_data:
             ip = ','.join(ip_data).encode('utf-8')
             self.Csv("csv/"+self._argv+"-ip-"+_time, "a", ip, "ignore", "increase") 
-            _text.append(ip)
+
             self.Send_mail(self.mailto_list,"[ERR]"+self._argv+"[NEW IP]","IP related forms","csv/"+self._argv+"-ip-"+_time+".csv", self._argv+"-ip-"+_time+".csv")
 
     #将端口相关写入日志
     def Port_count(self):
         port_data = Json_code.Port_alignment(self)
         _time = time.strftime('%Y-%m-%d')
-        _text = {}
         self.Csv("csv/"+self._argv+"-port-"+_time, "w", "Ip", "Port", "Status")
-        if port_data.values() and port_data.keys():
-            for k,v in port_data.items():
-                #如果IP或者端口有为空的情况就pass掉
-                if k and v:
-                    v = ','.join(v)
-                    v = [v.encode('utf-8')]
-                    self.Csv("csv/"+self._argv+"-port-"+_time,"a",  k, v, "incompatible")
-                    _text[k] = v
-            self.Send_mail(self.mailto_list,"[ERR]"+self._argv+"[port error]","Does not meet the expected port","csv/"+self._argv+"-port-"+_time+".csv",self._argv+"-port-"+_time+".csv")
+
+        for k,v in port_data.items():
+                v = [l.encode('utf-8') for l in v ]
+                self.Csv("csv/"+self._argv+"-port-"+_time,"a",  k, v, "incompatible")
+
+        self.Send_mail(self.mailto_list,"[ERR]"+self._argv+"[port error]","Does not meet the expected port","csv/"+self._argv+"-port-"+_time+".csv",self._argv+"-port-"+_time+".csv")
+    
     #执行总体代码
     def run(self):
     	self.Ip_count()
