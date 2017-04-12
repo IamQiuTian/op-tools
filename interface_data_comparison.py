@@ -4,14 +4,16 @@
 import urllib2
 import json
 import time
-import smtplib
-from email.mime.text import MIMEText
 import threading
 import os
 import sys
 import numpy as np
 import csv
-
+import smtplib
+from email.MIMEText import MIMEText 
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEBase import MIMEBase
+from email import Encoders
 
 class Json_code(threading.Thread):
     #初始化了一些需要的变量,预期端口和用户名密码之类的
@@ -20,16 +22,16 @@ class Json_code(threading.Thread):
         self.port_list = [80,81,6080,8080,8088,443,1935,22,51999,843,7911,9394,19394,19999,161,53,21108 ,1989,10051,800]
         self._argv = argv
         self._time = time.strftime('%Y-%m-%d %H:%m')
-        self.mailto_list=["xxxx","xxxx@163.com"]
+        self.mailto_list=["xxx@163.com","xxxx@163.com"]
         self.mail_host="smtp.163.com" 
-        self.mail_user="xxxxx"
-        self.mail_pass="xxxxx"
+        self.mail_user="xxxx"
+        self.mail_pass="xxxx"
         self.mail_postfix="163.com"
     
     #从接口获取数据,并进行json处理
     def Retrieve_data(self):
-        _url = "https://xxx.xxx.com/xxx/xxxx?tags={}".format(self._argv)
-        _headers = { 'API-KEY':'xxx','API-xxx':'xxxx','API-ID':'xxxx'}
+        _url = "https://xxxx.xxx.com/xxxx/ports?tags={}".format(self._argv)
+        _headers = { 'API-KEY':'xxx','API-SECRET':'xxxxx','API-ID':'xxxxx'}
         _reques = urllib2.Request(url=_url,headers=_headers)
         _response = urllib2.urlopen(_reques)
         _result = _response.read()
@@ -40,13 +42,13 @@ class Json_code(threading.Thread):
             return _data
         else:
             #t.Send_mail(self.mailto_list,self._argv+"接口异常","接口获取数据为空!")
-            print self._argv+"接口异常,获取数据为空"
+            print self._argv+"ports接口异常,获取数据为空"
             sys.exit(3)
 
     #获取IP列表
     def Get_IP_List(self):
-        _url = "https://xxx.xxxx.com/xxxx/xxxx?tag={}".format(self._argv)
-        _headers = { 'API-KEY':'xxxxx','API-xxxx':'xxxxx','API-ID':'xxxx'}
+        _url = "https://xxxx.xxxx.com/outerapi/assets_list?tag={}".format(self._argv)
+        _headers = { 'API-KEY':'xxxx','API-SECRET':'xxxx','API-ID':'xxxx'}
         _reques = urllib2.Request(url=_url,headers=_headers)
         _response = urllib2.urlopen(_reques)
         _result = _response.read()
@@ -57,7 +59,7 @@ class Json_code(threading.Thread):
             return _data
         else:
             #self.Send_mail(self.mailto_list,self._argv+"接口异常","接口获取数据为空!")
-            print self._argv+"接口异常,获取数据为空"
+            print self._argv+"assets_list接口异常,获取数据为空"
             sys.exit(3)
 
     #IP是否增加
@@ -66,7 +68,7 @@ class Json_code(threading.Thread):
         ip_list_def = self.Get_IP_List()["data"][0]["list"]
         ip_json = self.Retrieve_data()["data"]["list"]
         #测试IP增加的情况
-        ip_json["192.168.1.1"] = ["22","44"]
+        #ip_json["192.168.1.1"] = ["22","44"]
         Ip_list = [ip for ip in ip_json if np.in1d(ip,ip_list_def) == [False]]
         return Ip_list 
             
@@ -91,14 +93,26 @@ class Json_code(threading.Thread):
         return dict_port
 
     #用来发送邮件            
-    def Send_mail(self,to_list,sub,content):
+    def Send_mail(self,to_list,sub, body, file_path, file_name):
+        msg = MIMEMultipart()
         me="Tencent"+"<"+self.mail_user+"@"+self.mail_postfix+">"  
-        msg = MIMEText(content,_subtype='plain',_charset='utf-8') 
+        #msg.MIMEText(content,_subtype='plain',_chars:et='utf-8') 
+        body=MIMEText(body)
+        msg.attach(body)
+                
+        part = MIMEBase('application', 'octet-stream')        
+        part.set_payload(open(file_path,'rb').read())    
+        Encoders.encode_base64(part)
+        part.add_header('Content-Disposition', 'attachment; filename=%s' %file_name)
+        msg.attach(part)
+
         msg["Accept-Language"]="zh-CN"
         msg["Accept-Charset"]="ISO-8859-1,utf-8" 
         msg['Subject'] = sub  
         msg['From'] = me  
-        msg['To'] = ";".join(to_list)  
+        msg['To'] = ";".join(to_list) 
+
+ 
         try:  
             server = smtplib.SMTP_SSL()  
             server.connect(self.mail_host, port=465)  
@@ -110,10 +124,9 @@ class Json_code(threading.Thread):
             print(str(e)) 
             return False 
     
-    def Csv(self, file_path, ip, port, status ):
-        write_file = open(file_path+".csv",'w')
+    def Csv(self, file_path, mode, ip, port, status ):
+        write_file = open(file_path+".csv",mode)
         write_csv = csv.writer(write_file)
-        write_csv.writerow(["Ip", "Port", "Status"])
         write_csv.writerow([ip, port, status])
         write_file.flush()
          
@@ -122,32 +135,38 @@ class Json_code(threading.Thread):
 class Utils(Json_code):
     def __init__(self,argv):
         Json_code.__init__(self,argv)
+        if os.path.exists("csv"):
+            pass
+        else:
+            os.mkdir("csv")
 
     #将IP相关写入日志
     def Ip_count(self):
         ip_data = Json_code.Ip_alignment(self)
         _time = time.strftime('%Y-%m-%d')
         _text = []
+        self.Csv("csv/"+self._argv+"-ip-"+_time,"w", "Ip", "Port", "Status")
         if ip_data:
             ip = ','.join(ip_data).encode('utf-8')
-            self.Csv("ip-"+_time, ip, "ignore", "increase") 
+            self.Csv("csv/"+self._argv+"-ip-"+_time, "a", ip, "ignore", "increase") 
             _text.append(ip)
-            #self.Send_mail(self,self.mailto_list,"[ERR]"+self._argv+"[NEW IP]",_text)
+            self.Send_mail(self.mailto_list,"[ERR]"+self._argv+"[NEW IP]","IP related forms","csv/"+self._argv+"-ip-"+_time+".csv", self._argv+"-ip-"+_time+".csv")
 
     #将端口相关写入日志
     def Port_count(self):
         port_data = Json_code.Port_alignment(self)
         _time = time.strftime('%Y-%m-%d')
         _text = {}
-        if port_data:
+        self.Csv("csv/"+self._argv+"-port-"+_time, "w", "Ip", "Port", "Status")
+        if port_data.values() and port_data.keys():
             for k,v in port_data.items():
                 #如果IP或者端口有为空的情况就pass掉
                 if k and v:
                     v = ','.join(v)
                     v = [v.encode('utf-8')]
-                    self.Csv("port-"+_time, k, v, "incompatible")
+                    self.Csv("csv/"+self._argv+"-port-"+_time,"a",  k, v, "incompatible")
                     _text[k] = v
-            #self.Send_mail(self.mailto_list,"[ERR]"+self._argv+"[port error]",self._text)
+            self.Send_mail(self.mailto_list,"[ERR]"+self._argv+"[port error]","Does not meet the expected port","csv/"+self._argv+"-port-"+_time+".csv",self._argv+"-port-"+_time+".csv")
     #执行总体代码
     def run(self):
     	self.Ip_count()
