@@ -163,7 +163,6 @@ class Utils(Json_code):
         for k,v in port_data.items():
                 v = [l.encode('utf-8') for l in v ]
                 self.Csv("csv/"+self._argv+"-port-"+_time,"a",  k, v, "incompatible")
-
         self.Send_mail(self.mailto_list,"[ERR]"+self._argv+"[port error]","Does not meet the expected port","csv/"+self._argv+"-port-"+_time+".csv",self._argv+"-port-"+_time+".csv")
     
     #执行总体代码
