@@ -18,7 +18,7 @@ class Json_code(threading.Thread):
         self._argv = argv
         self.dirpath = dirpath
         #黑名单
-        self.blacklist = ["61.167.56.41"]
+        self.blacklist = ["x.x.x.x"]
         cp = ConfigParser.SafeConfigParser()
         cp.read('cdn_port.conf')
         self.port_list = [int(x) for x in cp.get(argv, "port").split(",")]
@@ -35,7 +35,7 @@ class Json_code(threading.Thread):
     #从接口获取数据,并进行json处理
     def Retrieve_data(self):
         _url = "https://kenan.3spear.com/outerapi/ports?tags=%s" %self._argv
-        _headers = { 'API-KEY':'o7Y3qYaN','API-SECRET':'RhmuTCZQMuz1D00y','API-ID':'isurecloud'}
+        _headers = { 'API-KEY':'xxxxx','API-SECRET':'xxxxx','API-ID':'xxxx'}
         _reques = urllib2.Request(url=_url,headers=_headers)
         _response = urllib2.urlopen(_reques)
         _result = _response.read()
