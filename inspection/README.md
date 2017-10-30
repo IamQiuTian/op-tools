@@ -1,4 +1,4 @@
-#### 服务器批量巡检
+### 服务器批量巡检
 
 `
 python inspection.py
@@ -22,4 +22,4 @@ python inspection.py
 +  磁盘使用率为8%
 +  今天的oracle备份文件不存在
 +  错误日志存放在 /root/error_log/192.16.183.21.log
-·
+`
