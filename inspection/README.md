@@ -1,7 +1,7 @@
 ### 服务器批量巡检
 
 ```
-python inspection.py
+# python2.7 inspection.py
 >>>192.16.183.11
 +  cpu使用率为0.5%
 +  内存使用率为8.5%
