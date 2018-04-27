@@ -120,8 +120,7 @@ def merge_File_Search(url):
                 ip = line.split(' ')[2]
                 ipList.append(ip)
 
-        print ipList[0], ipList[1], ipList[2]
-        print "PV: {}   IP: {}".format(urlCount, len(list(set(ipList))) + 1)
+    print "PV: {}   IP: {}".format(urlCount, len(list(set(ipList))) + 1)
 
 # 从gz压缩包中直接读取数据
 def read_gz_file(path):
